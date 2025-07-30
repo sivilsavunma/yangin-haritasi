@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    body { margin: 0; }
+    html, body { margin: 0; padding: 0; height: 100%; }
     #map { height: 100vh; width: 100vw; }
   </style>
 </head>
@@ -15,20 +15,19 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Haritayı başlat
     const map = L.map('map').setView([39.0, 35.0], 6);
 
-    // OpenStreetMap zemin katmanı
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 18,
+      attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // JSON dosyasını yükle
     fetch('yanginlar.json')
       .then(response => response.json())
       .then(veriler => {
         veriler.forEach(yangin => {
+          if (!yangin.latitude || !yangin.longitude) return;
+
           const marker = L.circleMarker([yangin.latitude, yangin.longitude], {
             radius: 6,
             fillColor: "red",
@@ -39,19 +38,17 @@
           }).addTo(map);
 
           marker.bindPopup(`
-  <strong>🔥 Yangın Tespit Edildi</strong><br>
-  🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
-  📅 Tarih: ${yangin.acq_date}<br>
-  🕓 Saat: ${yangin.acq_time}<br>
-  ✨ Parlaklık: ${yangin.bright_ti4}
-`);
-
-
+            <strong>🔥 Yangın Tespit Edildi</strong><br>
+            🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
+            📅 Tarih: ${yangin.acq_date || "yok"}<br>
+            🕓 Saat: ${yangin.acq_time || "yok"}<br>
+            ✨ Parlaklık: ${yangin.bright_ti4 || "yok"}
+          `);
         });
       })
       .catch(error => {
-        console.error("🚫 Veriler yüklenemedi:", error);
-        alert("Veri yüklenirken hata oluştu.");
+        console.error("🚫 JSON yüklenemedi:", error);
+        alert("Veri yüklenemedi.");
       });
   </script>
 </body>
