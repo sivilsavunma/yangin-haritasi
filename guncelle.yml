@@ -1,0 +1,34 @@
+name: VeriGuncelle
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Her gün 07:00 TR saati
+  workflow_dispatch:
+
+jobs:
+  vericek:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repo'yu klonla
+        uses: actions/checkout@v3
+
+      - name: Python kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Gerekli paketleri yükle
+        run: pip install pandas requests
+
+      - name: Veri çek ve JSON üret
+        run: |
+          python guncelle.py
+
+      - name: Değişiklikleri GitHub'a yükle
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add yanginlar.json
+          git commit -m "🔄 Otomatik veri güncelleme"
+          git push
