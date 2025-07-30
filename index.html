@@ -22,6 +22,15 @@
       attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
+    // Saat dönüşüm fonksiyonu (UTC → Türkiye saati)
+    function saatDonustur(acq_time) {
+      if (!acq_time || acq_time.length < 4) return "Bilinmiyor";
+      const saat = parseInt(acq_time.slice(0, 2));
+      const dakika = acq_time.slice(2);
+      const tsSaat = (saat + 3) % 24;
+      return `${tsSaat.toString().padStart(2, '0')}:${dakika}`;
+    }
+
     fetch('yanginlar.json')
       .then(response => response.json())
       .then(veriler => {
@@ -37,14 +46,15 @@
             fillOpacity: 0.8
           }).addTo(map);
 
-          marker.bindPopup(`
-  <strong>🔥 Yangın Tespit Edildi</strong><br>
-  🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
-  📅 Tarih: ${yangin["acq_date"] || "yok"}<br>
-  🕓 Saat: ${yangin["acq_time"] || "yok"}<br>
-  ✨ Parlaklık: ${yangin["bright_ti4"] || "yok"}
-`);
+          const saatTSI = saatDonustur(yangin["acq_time"]);
 
+          marker.bindPopup(`
+            <strong>🔥 Yangın Tespit Edildi</strong><br>
+            🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
+            📅 Tarih: ${yangin["acq_date"] || "yok"}<br>
+            🕓 Saat (TSİ): ${saatTSI}<br>
+            ✨ Parlaklık: ${yangin["bright_ti4"] || "yok"}
+          `);
         });
       })
       .catch(error => {
