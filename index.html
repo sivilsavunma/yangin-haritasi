@@ -38,12 +38,13 @@
           }).addTo(map);
 
           marker.bindPopup(`
-            <strong>🔥 Yangın Tespit Edildi</strong><br>
-            🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
-            📅 Tarih: ${yangin.acq_date || "yok"}<br>
-            🕓 Saat: ${yangin.acq_time || "yok"}<br>
-            ✨ Parlaklık: ${yangin.bright_ti4 || "yok"}
-          `);
+  <strong>🔥 Yangın Tespit Edildi</strong><br>
+  🌍 Koordinat: ${yangin.latitude.toFixed(2)}, ${yangin.longitude.toFixed(2)}<br>
+  📅 Tarih: ${yangin["acq_date"] || "yok"}<br>
+  🕓 Saat: ${yangin["acq_time"] || "yok"}<br>
+  ✨ Parlaklık: ${yangin["bright_ti4"] || "yok"}
+`);
+
         });
       })
       .catch(error => {
