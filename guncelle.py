@@ -11,7 +11,7 @@ with open("veri.csv", "w", encoding="utf-8") as f:
     f.write(r.text)
 
 df = pd.read_csv("veri.csv")
-df = df[["latitude", "longitude", "acq_date", "acq_time", "brightness"]]
+df = df[["latitude", "longitude", "acq_date", "acq_time", "bright_ti4"]]
 df.to_json("yanginlar.json", orient="records", indent=2, force_ascii=False)
 
 print("✅ yanginlar.json dosyası güncellendi.")
